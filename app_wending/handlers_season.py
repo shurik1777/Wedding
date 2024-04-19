@@ -1,6 +1,7 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 import app_wending.keyboards as kb
+from app_wending.database.bd import db_quiz
 
 router_one = Router()
 
@@ -12,6 +13,7 @@ async def season_spring(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
         'Весна', reply_markup=kb.next_back_season)
+    db_quiz['season'] = 'spring'
 
 
 @router_one.callback_query(F.data == 'summer')
@@ -19,6 +21,7 @@ async def season_summer(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
         'Лето', reply_markup=kb.next_back_season)
+    db_quiz['season'] = 'summer'
 
 
 @router_one.callback_query(F.data == 'autumn')
@@ -26,6 +29,7 @@ async def season_autumn(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
         'Осень', reply_markup=kb.next_back_season)
+    db_quiz['season'] = 'autumn'
 
 
 @router_one.callback_query(F.data == 'winter')
@@ -33,6 +37,7 @@ async def season_winter(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
         'Зима', reply_markup=kb.next_back_season)
+    db_quiz['season'] = 'winter'
 
 
 @router_one.callback_query(F.data == 'seasons')

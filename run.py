@@ -15,6 +15,7 @@ from app_wending.handlers_place import router_four
 from app_wending.handlers_fashion import router_five
 from app_wending.handlers_amount import router_six
 from app_wending.handlers_costume import router_seven
+from app_wending.handlers_info import router_eight
 
 load_dotenv(find_dotenv())
 
@@ -33,6 +34,7 @@ async def main():
     dp.include_router(router_five)
     dp.include_router(router_six)
     dp.include_router(router_seven)
+    dp.include_router(router_eight)
     await dp.start_polling(bot)
 
 

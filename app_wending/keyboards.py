@@ -103,13 +103,22 @@ next_back_fashion = InlineKeyboardMarkup(inline_keyboard=[
 """ Выбор костюма жениха """
 
 costume = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Классика', callback_data='classic'),
+    [InlineKeyboardButton(text='Классика', callback_data='classic_costume'),
      InlineKeyboardButton(text='Смокинг', callback_data='tuxedo')],
     [InlineKeyboardButton(text='Кэжуал', callback_data='casual'),
-     InlineKeyboardButton(text='Современный костюм', callback_data='something')],
+     InlineKeyboardButton(text='Современный костюм', callback_data='modern_costume')],
     [InlineKeyboardButton(text='Назад', callback_data='fashion')],
 ])
 
 next_back_costume = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Назад', callback_data='costume'),
-     InlineKeyboardButton(text='Далее', callback_data='costume')]])
+     InlineKeyboardButton(text='Далее', callback_data='result_data')]
+])
+
+""" Итог квиза """
+
+result_data = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='Назад', callback_data='costume'),
+     InlineKeyboardButton(text='Меню', callback_data='Назад')]
+])
+

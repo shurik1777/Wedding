@@ -1,6 +1,7 @@
 from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
+from app_wending.database.bd import db_quiz
 
 from aiogram.utils.formatting import Bold
 
@@ -24,6 +25,8 @@ async def season_quiz(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
         Bold('Выбор сезона').as_html(), reply_markup=kb.seasons)
+    db_quiz.clear()
+    db_quiz['user_id'] = callback.message.from_user.id
 
 
 # @router.message(F.photo)

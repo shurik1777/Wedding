@@ -1,6 +1,7 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 import app_wending.keyboards as kb
+from app_wending.database.bd import db_quiz
 
 router_six = Router()
 
@@ -11,6 +12,7 @@ async def amount_together(callback: CallbackQuery):
     await callback.answer('Только вдвоем')
     await callback.message.edit_text(
         'Только вдвоем', reply_markup=kb.next_back_amount)
+    db_quiz['amount'] = 'together'
 
 
 @router_six.callback_query(F.data == 'folks')
@@ -18,6 +20,7 @@ async def amount_folks(callback: CallbackQuery):
     await callback.answer('Только близкие')
     await callback.message.edit_text(
         'Только близкие', reply_markup=kb.next_back_amount)
+    db_quiz['amount'] = 'folks'
 
 
 @router_six.callback_query(F.data == 'upto100')
@@ -25,6 +28,7 @@ async def amount_upto100(callback: CallbackQuery):
     await callback.answer('До 100')
     await callback.message.edit_text(
         'До 100', reply_markup=kb.next_back_amount)
+    db_quiz['amount'] = 'upto100'
 
 
 @router_six.callback_query(F.data == 'more100')
@@ -32,6 +36,7 @@ async def amount_more100(callback: CallbackQuery):
     await callback.answer('Более 100')
     await callback.message.edit_text(
         'Более 100', reply_markup=kb.next_back_amount)
+    db_quiz['amount'] = 'more100'
 
 
 @router_six.callback_query(F.data == 'amount')
