@@ -1,6 +1,9 @@
 from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
+
+from aiogram.utils.formatting import Bold
+
 import app_wending.keyboards as kb
 
 router = Router()
@@ -20,7 +23,7 @@ async def cmd_start(message: Message):
 async def season_quiz(callback: CallbackQuery):
     await callback.answer('Вы выбрали "Выбор сезона"')
     await callback.message.edit_text(
-        'Выбор сезона', reply_markup=kb.seasons)
+        Bold('Выбор сезона').as_html(), reply_markup=kb.seasons)
 
 
 # @router.message(F.photo)

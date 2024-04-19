@@ -1,5 +1,9 @@
 import asyncio
 import logging
+
+from aiogram.client.bot import DefaultBotProperties
+from aiogram.enums import ParseMode
+
 from os import getenv
 from dotenv import find_dotenv, load_dotenv
 from aiogram import Bot, Dispatcher
@@ -16,7 +20,10 @@ load_dotenv(find_dotenv())
 
 
 async def main():
-    bot = Bot(token=getenv('TOKEN'))
+    # bot = Bot(token=getenv('TOKEN'))
+
+    bot = Bot(token=getenv('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
     dp = Dispatcher()
     dp.include_router(router)
     dp.include_router(router_one)
@@ -32,6 +39,7 @@ async def main():
 if __name__ == '__main__':
     # logging.basicConfig(level=logging.INFO)
     try:
+        print('Я запустился')
         asyncio.run(main())
     except KeyboardInterrupt:
         print('Exit')

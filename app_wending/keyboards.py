@@ -42,7 +42,7 @@ next_back_amount = InlineKeyboardMarkup(inline_keyboard=[
 
 place = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Банкетный зал', callback_data='restaurant'),
-     InlineKeyboardButton(text='Уникальное локация', callback_data='unique')],
+     InlineKeyboardButton(text='Уникальная локация', callback_data='unique')],
     [InlineKeyboardButton(text='Вечеринка в саду', callback_data='garden'),
      InlineKeyboardButton(text='У берега моря', callback_data='sea')],
     [InlineKeyboardButton(text='Назад', callback_data='amount')],
