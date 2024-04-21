@@ -24,9 +24,9 @@ bot = Bot(token=getenv('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMo
 
 
 async def on_startup(bot):
-    run_param = False
-    if run_param:
-        await drop_db()
+    # run_param = False
+    # if run_param:
+    #     await drop_db()
 
     await create_db()
 
@@ -51,7 +51,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
     try:
         print('Я запустился')
         asyncio.run(main())
