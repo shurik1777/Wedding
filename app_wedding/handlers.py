@@ -1,11 +1,11 @@
 from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
-from app_wending.database.bd import db_quiz
+from app_wedding.database.db import db_quiz
 
 from aiogram.utils.formatting import Bold
 
-import app_wending.keyboards as kb
+import app_wedding.keyboards as kb
 
 router = Router()
 

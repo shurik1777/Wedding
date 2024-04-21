@@ -7,25 +7,37 @@ from aiogram.enums import ParseMode
 from os import getenv
 from dotenv import find_dotenv, load_dotenv
 from aiogram import Bot, Dispatcher
-from app_wending.handlers import router
-from app_wending.handlers_season import router_one
-from app_wending.handlers_style import router_two
-from app_wending.handlers_colors import router_three
-from app_wending.handlers_place import router_four
-from app_wending.handlers_fashion import router_five
-from app_wending.handlers_amount import router_six
-from app_wending.handlers_costume import router_seven
-from app_wending.handlers_info import router_eight
+from app_wedding.database.engine import DataBaseSession, session_maker, drop_db, create_db
+from app_wedding.handlers import router
+from app_wedding.handlers_season import router_one
+from app_wedding.handlers_style import router_two
+from app_wedding.handlers_colors import router_three
+from app_wedding.handlers_place import router_four
+from app_wedding.handlers_fashion import router_five
+from app_wedding.handlers_amount import router_six
+from app_wedding.handlers_costume import router_seven
+from app_wedding.handlers_info import router_eight
 
 load_dotenv(find_dotenv())
 
+bot = Bot(token=getenv('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+
+async def on_startup(bot):
+    run_param = False
+    if run_param:
+        await drop_db()
+
+    await create_db()
+
 
 async def main():
-    # bot = Bot(token=getenv('TOKEN'))
-
-    bot = Bot(token=getenv('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
     dp = Dispatcher()
+
+    dp.startup.register(on_startup)
+
+    dp.update.middleware(DataBaseSession(session_pool=session_maker))
+
     dp.include_router(router)
     dp.include_router(router_one)
     dp.include_router(router_two)
@@ -39,7 +51,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     try:
         print('Я запустился')
         asyncio.run(main())
