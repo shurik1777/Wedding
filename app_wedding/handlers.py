@@ -1,20 +1,30 @@
-from aiogram import F, Router
+from aiogram import F, Router, types
+from aiogram.client import bot
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from app_wedding.database.db import db_quiz
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from aiogram.utils.formatting import Bold
 
 import app_wedding.keyboards as kb
+from app_wedding.menu_processing import get_menu_content
 
 router = Router()
 
 
 #  Отлавливаем команду /start
+# @router.message(CommandStart())
+# async def cmd_start(message: Message):
+#     await message.answer(f'{message.from_user.username}, добро пожаловать в WeddingBot!',
+#                          reply_markup=kb.main)
+
 @router.message(CommandStart())
-async def cmd_start(message: Message):
-    await message.answer(f'Привет! {message.from_user.username}',
-                         reply_markup=kb.main)
+async def start_cmd(message: types.Message, session: AsyncSession):
+    media, reply_markup = await get_menu_content(session, level=0, menu_name="main")
+
+    await message.answer_photo(media.media, caption=media.caption, reply_markup=reply_markup)
+
 
 
 """ Первый уровень квиза - выбор сезона """
@@ -22,7 +32,7 @@ async def cmd_start(message: Message):
 
 @router.callback_query(F.data == 'quiz')
 async def season_quiz(callback: CallbackQuery):
-    await callback.answer('Вы выбрали "Выбор сезона"')
+    await callback.answer()
     await callback.message.edit_text(
         Bold('Выбор сезона').as_html(), reply_markup=kb.seasons)
     db_quiz.clear()
