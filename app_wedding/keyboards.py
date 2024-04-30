@@ -119,6 +119,6 @@ next_back_costume = InlineKeyboardMarkup(inline_keyboard=[
 
 result_data = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Назад', callback_data='costume'),
-     InlineKeyboardButton(text='Меню', callback_data='Назад')]
+     InlineKeyboardButton(text='Меню', callback_data='menu')]
 ])
 

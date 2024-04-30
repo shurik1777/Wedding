@@ -1,5 +1,4 @@
 import asyncio
-import logging
 
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -7,7 +6,7 @@ from aiogram.enums import ParseMode
 from os import getenv
 from dotenv import find_dotenv, load_dotenv
 from aiogram import Bot, Dispatcher
-from app_wedding.database.engine import DataBaseSession, session_maker, drop_db, create_db
+from app_wedding.database.engine import DataBaseSession, session_maker, create_db
 from app_wedding.handlers import router
 from app_wedding.handlers_season import router_one
 from app_wedding.handlers_style import router_two
@@ -24,9 +23,9 @@ bot = Bot(token=getenv('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMo
 
 
 async def on_startup(bot):
-    run_param = False
-    if run_param:
-        await drop_db()
+    # run_param = False
+    # if run_param:
+    #     await drop_db()
 
     await create_db()
 
@@ -51,7 +50,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
     try:
         print('Я запустился')
         asyncio.run(main())
