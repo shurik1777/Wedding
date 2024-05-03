@@ -1,5 +1,11 @@
 .idea
 venv
 .env
+<<<<<<< HEAD
 __pycache__
 /__pycache__/
+
+banners
+.__pycache__/
+..__pycache__/
+...__pycache__/
