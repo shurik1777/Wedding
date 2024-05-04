@@ -1,18 +1,45 @@
-from aiogram import F, Router, types
+from aiogram import Router, types
 from aiogram.filters import CommandStart
-from aiogram.types import CallbackQuery
-from app_wedding.database.db import db_quiz
+# from app_wedding.database.db import db_quiz
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from aiogram.utils.formatting import Bold
-
-import app_wedding.handlers_old.keyboards as kb
+from app_wedding.database.models import Quiz
 from app_wedding.filters.chat_types import ChatTypeFilter
 from app_wedding.kbds.inline import MenuCallBack, SeasonCallBack
 from app_wedding.menu_processing import get_menu_content
 
 router = Router()
 router.message.filter(ChatTypeFilter(["private"]))
+
+
+async def process_season_choice(season: str, user_id: int, db_quiz: dict):
+    # Проверяем, есть ли уже запись для этого пользователя
+    if user_id in db_quiz:
+        # Обновляем существующую запись
+        db_quiz[user_id][season] = True
+    else:
+        # Создаем новую запись для пользователя
+        db_quiz[user_id] = {season: True}
+
+    # Возвращаем обновленный словарь
+    return db_quiz
+
+
+async def add_data(session, db_quiz):
+    # Создаем объект Quiz на основе данных из db_quiz
+    data = Quiz(tg_id=db_quiz['user_id'],
+                season=db_quiz['season'],
+                amount=db_quiz['amount'],
+                place=db_quiz['place'],
+                style=db_quiz['style'],
+                colors=db_quiz['colors'],
+                fashion=db_quiz['fashion'],
+                costume=db_quiz['costume'])
+    # Добавляем объект в сессию и сохраняем изменения в БД
+    async with session.begin():
+        session.add(data)
+        print(data)
+    await session.commit()
 
 
 @router.message(CommandStart())
@@ -35,52 +62,19 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
     await callback.answer()
 
 
-@router.callback_query(SeasonCallBack.filter())
-async def season_menu(callback: types.CallbackQuery, callback_data: SeasonCallBack, session: AsyncSession):
+async def season_menu(callback: types.CallbackQuery, callback_data: SeasonCallBack, session: AsyncSession,
+                      db_quiz: dict):
     """ 1 уровень квиза"""
-    media, reply_markup = await get_menu_content(
-        session,
-        level=callback_data.level,
-        menu_name=callback_data.menu_name,
-    )
+    season = callback_data.menu_name
+    user_id = callback.message.from_user.id
+    # Получаем текущее состояние словаря db_quiz
+    db_quiz = await process_season_choice(season, user_id, db_quiz)
 
-    await callback.message.edit_media(media=media, reply_markup=reply_markup)
+    # Если это последний сезон в опросе, сохраняем данные в БД
+    if all(db_quiz[user_id].values()):
+        await add_data(session, db_quiz)
+
+    # Здесь можно обновить клавиатуру или сообщение в зависимости от выбранного сезона
+    # ...
+
     await callback.answer()
-
-
-@router.callback_query(F.data == 'quiz')
-async def season_quiz(callback: CallbackQuery):
-    await callback.answer()
-    await callback.message.edit_text(
-        Bold('Выбор сезона').as_html(), reply_markup=kb.main)
-    db_quiz.clear()
-    db_quiz['user_id'] = callback.message.from_user.id
-
-
-# @router.message(F.photo)
-# async def get_photo(message: Message):
-#     await message.answer(f'ID фото: {message.photo[-1].file_id}')
-
-
-""" 0й Уровень """
-
-
-@router.callback_query(F.data == 'about')
-async def main_about(callback: CallbackQuery):
-    await callback.answer('Вы выбрали "О нас"')
-    await callback.message.edit_text(
-        'Супер команда специалистов из ГБ', reply_markup=kb.back)
-
-
-@router.callback_query(F.data == 'about_b')
-async def main_about_b(callback: CallbackQuery):
-    await callback.answer()
-    await callback.message.edit_text(
-        'Бот помогает устроить вашу свадьбу', reply_markup=kb.back)
-
-
-@router.callback_query(F.data.startswith('Назад'))
-async def back_main(callback: CallbackQuery):
-    await callback.answer()
-    await callback.message.edit_text(
-        'И снова привет', reply_markup=kb.main)

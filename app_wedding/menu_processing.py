@@ -18,8 +18,10 @@ async def main_menu(session, level, menu_name):
 async def season(session, level, menu_name):
     """ Второй уровень меню """
     banner = await orm_get_banner(session, menu_name)
-    image = InputMediaPhoto(media=banner.image, caption=banner.description)
-
+    if banner is not None:
+        image = InputMediaPhoto(media=banner.image, caption=banner.description)
+    else:
+        image = None
     kbds = get_user_season_btns(level=level)
 
     return image, kbds
@@ -29,10 +31,6 @@ async def get_menu_content(
         session: AsyncSession,
         menu_name: str,
         level: int,
-        # category: int | None = None,
-        # page: int | None = None,
-        # product_id: int | None = None,
-        # user_id: int | None = None,
 ):
     """ Контент на вывод по уровням (сессия для работы с бд из в,
     левел уровень подтягивания клавиатуры инлайн, название меню строковое значение"""
@@ -41,6 +39,6 @@ async def get_menu_content(
     elif level == 10:
         return await season(session, level, menu_name)
     # elif level == 2:
-    #     return await products(session, level, category, page)
+    #     return await amount(session, level, menu_name)
     # elif level == 3:
-    #     return await carts(session, level, menu_name, page, user_id, product_id)
+    #     return await place(session, level, menu_name)

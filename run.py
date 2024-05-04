@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -41,7 +42,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     try:
         print('Я запустился')
         asyncio.run(main())
