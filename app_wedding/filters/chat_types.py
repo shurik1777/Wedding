@@ -1,4 +1,4 @@
-from aiogram.filters import Filter
+from aiogram.filters import Filter, BaseFilter
 from aiogram import Bot, types
 
 
