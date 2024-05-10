@@ -98,6 +98,7 @@ async def get_menu_content(
         session: AsyncSession,
         menu_name: str,
         level: int,
+        # page: str | None = None
 ):
     """ Контент на вывод по уровням (сессия для работы с бд из в,
     левел уровень подтягивания клавиатуры инлайн, название меню строковое значение"""

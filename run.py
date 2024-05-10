@@ -9,7 +9,7 @@ from dotenv import find_dotenv, load_dotenv
 from aiogram import Bot, Dispatcher
 
 from app_wedding.middlewares.db import DataBaseSession
-from app_wedding.database.engine import session_maker, create_db
+from app_wedding.database.engine import session_maker, create_db, drop_db
 from app_wedding.handlers.handlers import router
 
 load_dotenv(find_dotenv())

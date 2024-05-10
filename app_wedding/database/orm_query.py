@@ -36,14 +36,27 @@ async def orm_get_info_pages(session: AsyncSession):
 
 async def orm_add_user(
         session: AsyncSession,
-        user_id: int,
-        first_name: str | None = None,
+        user_id: int
 ):
     """ Добавляем юзера в БД """
     query = select(User).where(User.user_id == user_id)
     result = await session.execute(query)
     if result.first() is None:
         session.add(
-            User(user_id=user_id, first_name=first_name)
+            User(user_id=user_id)
+        )
+        await session.commit()
+
+
+async def orm_dell_user(
+        session: AsyncSession,
+        user_id: int
+):
+    """ Добавляем юзера в БД """
+    query = select(User).where(User.user_id == user_id)
+    result = await session.execute(query)
+    if result.first() is None:
+        await session.delete(
+            User(user_id=user_id)
         )
         await session.commit()

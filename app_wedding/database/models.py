@@ -1,5 +1,5 @@
-from sqlalchemy import DateTime, String, BigInteger, func, Text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import DateTime, String, BigInteger, func, Text, ForeignKey, Column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -12,7 +12,7 @@ class Quiz(Base):
     __tablename__ = 'quiz'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    tg_id = mapped_column(BigInteger)
+    user_id = Column(BigInteger, ForeignKey('user.id'), index=True)
     season: Mapped[str] = mapped_column(String(25))
     amount: Mapped[str] = mapped_column(String(25))
     place: Mapped[str] = mapped_column(String(25))
@@ -35,5 +35,6 @@ class User(Base):
     __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(unique=True)
-    first_name: Mapped[str] = mapped_column(String(150), nullable=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, unique=True)
+
+    quizzes = relationship("Quiz", backref="user")

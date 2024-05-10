@@ -1,11 +1,12 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 class MenuCallBack(CallbackData, prefix="main"):
     menu_name: str
     level: int | None = None
+    page: str | None = None
 
 
 def get_user_main_btns(*, level: int, sizes: tuple[int] = (2,)):
@@ -19,7 +20,9 @@ def get_user_main_btns(*, level: int, sizes: tuple[int] = (2,)):
     for text, menu_name in btns.items():
         if menu_name == 'season':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=10, menu_name='season').pack()))
+                                              callback_data=MenuCallBack(level=10, menu_name='season',
+                                                                         page='str_one').pack()))
+
         elif menu_name == 'result':
             keyboard.add(InlineKeyboardButton(text=text,
                                               callback_data=MenuCallBack(level=1, menu_name=menu_name).pack()))
@@ -38,24 +41,30 @@ def get_user_season_btns(*, level: int, sizes: tuple[int] = (2,)):
         "Весна": "spring",
         "Лето": "summer",
         "Осень": "autumn",
-        "Назад": "start",
+        "Назад": "main",
     }
     for text, menu_name in btns.items():
-        if menu_name == 'start':
+        if menu_name == 'main':
             keyboard.add(InlineKeyboardButton(text='Назад',
-                                              callback_data=MenuCallBack(level=0, menu_name='main').pack()))
+                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                                                         page='main_main').pack()))
         elif menu_name == 'winter':
             keyboard.add(InlineKeyboardButton(text="Зима",
-                                              callback_data=MenuCallBack(level=20, menu_name='amount').pack()))
+                                              callback_data=MenuCallBack(level=20, menu_name='amount',
+                                                                         page='season_winter').pack()))
         elif menu_name == 'spring':
             keyboard.add(InlineKeyboardButton(text="Весна",
-                                              callback_data=MenuCallBack(level=20, menu_name='amount').pack()))
+                                              callback_data=MenuCallBack(level=20, menu_name='amount',
+                                                                         page='season_spring').pack()))
         elif menu_name == 'summer':
             keyboard.add(InlineKeyboardButton(text="Лето",
-                                              callback_data=MenuCallBack(level=20, menu_name='amount').pack()))
+                                              callback_data=MenuCallBack(level=20, menu_name='amount',
+                                                                         page='season_summer').pack()))
         elif menu_name == 'autumn':
             keyboard.add(InlineKeyboardButton(text="Осень",
-                                              callback_data=MenuCallBack(level=20, menu_name='amount').pack()))
+                                              callback_data=MenuCallBack(level=20, menu_name='amount',
+                                                                         page='season_autumn').pack()))
+
     return keyboard.adjust(*sizes).as_markup()
 
 
@@ -65,26 +74,31 @@ def get_user_amount_btns(*, level: int, sizes: tuple[int] = (2,)):
     btns = {
         "Только в 2м": "two",
         "Только близкие": "folks",
-        "До ста": "up_to_100",
-        "Больше 100": "more_than_100",
+        "До ста": "upto100",
+        "Больше 100": "morethan100",
         "Назад": "start2",
     }
     for text, menu_name in btns.items():
         if menu_name == "start2":
             keyboard.add(InlineKeyboardButton(text='Назад',
-                                              callback_data=MenuCallBack(level=10, menu_name='season').pack()))
+                                              callback_data=MenuCallBack(level=10, menu_name='season',
+                                                                         page='season_season').pack()))
         elif menu_name == 'two':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=30, menu_name='place').pack()))
+                                              callback_data=MenuCallBack(level=30, menu_name='place',
+                                                                         page='season_two').pack()))
         elif menu_name == 'folks':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=30, menu_name='place').pack()))
-        elif menu_name == 'up_to_100':
+                                              callback_data=MenuCallBack(level=30, menu_name='place',
+                                                                         page='season_folks').pack()))
+        elif menu_name == 'upto100':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=30, menu_name='place').pack()))
-        elif menu_name == 'more_than_100':
+                                              callback_data=MenuCallBack(level=30, menu_name='place',
+                                                                         page='season_upto100').pack()))
+        elif menu_name == 'morethan100':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=30, menu_name='place').pack()))
+                                              callback_data=MenuCallBack(level=30, menu_name='place',
+                                                                         page='season_morethan100').pack()))
 
     return keyboard.adjust(*sizes).as_markup()
 
