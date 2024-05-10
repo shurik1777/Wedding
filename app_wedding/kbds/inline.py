@@ -82,23 +82,23 @@ def get_user_amount_btns(*, level: int, sizes: tuple[int] = (2,)):
         if menu_name == "start2":
             keyboard.add(InlineKeyboardButton(text='Назад',
                                               callback_data=MenuCallBack(level=10, menu_name='season',
-                                                                         page='season_season').pack()))
+                                                                         page='amount_season').pack()))
         elif menu_name == 'two':
             keyboard.add(InlineKeyboardButton(text=text,
                                               callback_data=MenuCallBack(level=30, menu_name='place',
-                                                                         page='season_two').pack()))
+                                                                         page='amount_two').pack()))
         elif menu_name == 'folks':
             keyboard.add(InlineKeyboardButton(text=text,
                                               callback_data=MenuCallBack(level=30, menu_name='place',
-                                                                         page='season_folks').pack()))
+                                                                         page='amount_folks').pack()))
         elif menu_name == 'upto100':
             keyboard.add(InlineKeyboardButton(text=text,
                                               callback_data=MenuCallBack(level=30, menu_name='place',
-                                                                         page='season_upto100').pack()))
+                                                                         page='amount_upto100').pack()))
         elif menu_name == 'morethan100':
             keyboard.add(InlineKeyboardButton(text=text,
                                               callback_data=MenuCallBack(level=30, menu_name='place',
-                                                                         page='season_morethan100').pack()))
+                                                                         page='amount_morethan100').pack()))
 
     return keyboard.adjust(*sizes).as_markup()
 
@@ -116,19 +116,24 @@ def get_user_place_btns(*, level: int, sizes: tuple[int] = (2,)):
     for text, menu_name in btns.items():
         if menu_name == "start3":
             keyboard.add(InlineKeyboardButton(text='Назад',
-                                              callback_data=MenuCallBack(level=20, menu_name='amount').pack()))
+                                              callback_data=MenuCallBack(level=20, menu_name='amount',
+                                                                         page='place_amount').pack()))
         elif menu_name == 'garden':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=40, menu_name='style').pack()))
+                                              callback_data=MenuCallBack(level=40, menu_name='style',
+                                                                         page='place_garden').pack()))
         elif menu_name == 'restaurant':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=40, menu_name='style').pack()))
+                                              callback_data=MenuCallBack(level=40, menu_name='style',
+                                                                         page='place_restaurant').pack()))
         elif menu_name == 'sea':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=40, menu_name='style').pack()))
+                                              callback_data=MenuCallBack(level=40, menu_name='style',
+                                                                         page='place_sea').pack()))
         elif menu_name == 'unique':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=40, menu_name='style').pack()))
+                                              callback_data=MenuCallBack(level=40, menu_name='style',
+                                                                         page='place_unique').pack()))
 
     return keyboard.adjust(*sizes).as_markup()
 

@@ -1,5 +1,6 @@
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, BigInteger
 from sqlalchemy.ext.asyncio import AsyncSession
+
 
 from app_wedding.database.models import Banner, User
 
