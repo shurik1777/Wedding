@@ -20,9 +20,9 @@ class Quiz(Base):
     colors: Mapped[str] = mapped_column(String(25))
     fashion: Mapped[str] = mapped_column(String(25))
     costume: Mapped[str] = mapped_column(String(25))
-
-    def __str__(self):
-        return f'{self.season} {self.amount} {self.place} {self.style} {self.colors} {self.fashion}'
+    #
+    # def __str__(self):
+    #     return f'{self.season} {self.amount} {self.place} {self.style} {self.colors} {self.fashion} {self.costume}'
 
 
 class Banner(Base):

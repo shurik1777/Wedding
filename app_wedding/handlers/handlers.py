@@ -2,7 +2,7 @@ from aiogram import Router, types
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app_wedding.database.models import Quiz
+from app_wedding.database.models import Quiz, User
 from app_wedding.database.orm_query import orm_add_user, orm_dell_user
 from app_wedding.filters.chat_types import ChatTypeFilter
 from app_wedding.kbds.inline import MenuCallBack
@@ -30,10 +30,10 @@ async def add_user(callback: types.CallbackQuery, session: AsyncSession):
 
 async def dell_user(callback: types.CallbackQuery, session: AsyncSession):
     user = callback.from_user
-    await orm_dell_user(
-        session,
-        user_id=user.id,
-    )
+    from sqlalchemy import delete
+    query = delete(User).where(User.user_id == user.id)
+    await session.execute(query)
+    await session.commit()
     await callback.answer()
 
 
@@ -51,9 +51,34 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
         print("=" * 50)
     elif callback_data.menu_name == "place":
         result.amount = str(callback_data.page).split('_')[1]
-    print("=" * 50)
-    print(result)
-    print("=" * 50)
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
+    elif callback_data.menu_name == "style":
+        result.place = str(callback_data.page).split('_')[1]
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
+    elif callback_data.menu_name == "colors":
+        result.style = str(callback_data.page).split('_')[1]
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
+    elif callback_data.menu_name == "fashion":
+        result.colors = str(callback_data.page).split('_')[1]
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
+    elif callback_data.menu_name == "costume":
+        result.fashion = str(callback_data.page).split('_')[1]
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
+    elif callback_data.menu_name == "main":
+        result.costume = str(callback_data.page).split('_')[1]
+        print("=" * 50)
+        print(result)
+        print("=" * 50)
     media, reply_markup = await get_menu_content(
         session,
         level=callback_data.level,
