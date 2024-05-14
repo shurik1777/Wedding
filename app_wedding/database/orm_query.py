@@ -2,7 +2,7 @@ from sqlalchemy import select, update, delete, BigInteger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app_wedding.database.models import Banner, User
+from app_wedding.database.models import Banner, Quiz
 
 
 async def orm_add_banner_description(session: AsyncSession, data: dict):
@@ -40,11 +40,12 @@ async def orm_add_user(
         user_id: int
 ):
     """ Добавляем юзера в БД """
-    query = select(User).where(User.user_id == user_id)
+    # query = select(User).where(User.user_id == user_id)
+    query = select(Quiz).where(user_id == Quiz.user_id)
     result = await session.execute(query)
     if result.first() is None:
         session.add(
-            User(user_id=user_id)
+            Quiz(user_id=user_id)
         )
         await session.commit()
 
@@ -54,10 +55,10 @@ async def orm_dell_user(
         user_id: int
 ):
     """ Добавляем юзера в БД """
-    query = select(User).where(User.user_id == user_id)
+    query = select(Quiz).where(Quiz.user_id == user_id)
     result = await session.execute(query)
     if result.first() is None:
         await session.delete(
-            User(user_id=user_id)
+            Quiz(user_id=user_id)
         )
         await session.commit()
