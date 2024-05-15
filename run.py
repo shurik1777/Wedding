@@ -23,7 +23,7 @@ bot.my_admins_list = []
 
 async def on_startup():
 
-    await drop_db()
+    # await drop_db()
 
     await create_db()
 

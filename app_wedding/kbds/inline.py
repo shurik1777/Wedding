@@ -9,11 +9,15 @@ class MenuCallBack(CallbackData, prefix="main"):
     page: str | None = None
 
 
+class EndMenuCallBack(CallbackData, prefix="end"):
+    menu_name: str
+    level: int | None = None
+
+
 def get_user_main_btns(*, level: int, sizes: tuple[int] = (2,)):
     keyboard = InlineKeyboardBuilder()
     btns = {
         "Старт квиза 🍕": "season",
-        "Результат 🛒": "result",
         "О боте ℹ️": "about_b",
         "О нас 💰": "about",
     }
@@ -290,18 +294,36 @@ def get_user_costume_btns(*, level: int, sizes: tuple[int] = (2,)):
                                                                          page='costume_fashion').pack()))
         elif menu_name == 'classicCostume':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                              callback_data=MenuCallBack(level=80, menu_name='end',
                                                                          page='costume_classicCostume').pack()))
         elif menu_name == 'tuxedo':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                              callback_data=MenuCallBack(level=80, menu_name='end',
                                                                          page='costume_tuxedo').pack()))
         elif menu_name == 'casual':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                              callback_data=MenuCallBack(level=80, menu_name='end',
                                                                          page='costume_casual').pack()))
         elif menu_name == 'modernCostume':
             keyboard.add(InlineKeyboardButton(text=text,
-                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                              callback_data=MenuCallBack(level=80, menu_name='end',
                                                                          page='costume_modernCostume').pack()))
+    return keyboard.adjust(*sizes).as_markup()
+
+
+def get_user_end_btns(*, level: int, sizes: tuple[int] = (2,)):
+    """ Инлайн билдер клавиатуры со словарем ключ значение"""
+    keyboard = InlineKeyboardBuilder()
+    btns = {
+        "Ваш результат": "result",
+        "Пройти еще раз": "again",
+    }
+    for text, menu_name in btns.items():
+        if menu_name == "result":
+            keyboard.add(InlineKeyboardButton(text='Ваш результат',
+                                              callback_data=EndMenuCallBack(level=80, menu_name='end').pack()))
+        elif menu_name == 'again':
+            keyboard.add(InlineKeyboardButton(text=text,
+                                              callback_data=MenuCallBack(level=0, menu_name='main',
+                                                                         page='again_main').pack()))
     return keyboard.adjust(*sizes).as_markup()

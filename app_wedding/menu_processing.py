@@ -11,6 +11,7 @@ from app_wedding.kbds.inline import (
     get_user_colors_btns,
     get_user_costume_btns,
     get_user_fashion_btns,
+    get_user_end_btns,
 )
 
 
@@ -94,6 +95,16 @@ async def costume(session, level, menu_name):
     return image, kbds
 
 
+async def end(session, level, menu_name):
+    """ Третий уровень меню """
+    banner = await orm_get_banner(session, menu_name)
+    image = InputMediaPhoto(media=banner.image, caption=banner.description)
+
+    kbds = get_user_end_btns(level=level)
+
+    return image, kbds
+
+
 async def get_menu_content(
         session: AsyncSession,
         menu_name: str,
@@ -118,3 +129,5 @@ async def get_menu_content(
         return await fashion(session, level, menu_name)
     elif level == 70:
         return await costume(session, level, menu_name)
+    elif level == 80:
+        return await end(session, level, menu_name)
