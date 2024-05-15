@@ -1,6 +1,9 @@
+from typing import Dict
+
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import load_only
 
 from app_wedding.database.models import Quiz
 from app_wedding.database.orm_query import orm_add_user
@@ -60,40 +63,6 @@ async def add_values(callback: types.CallbackQuery, session: AsyncSession, value
     await session.commit()
     await callback.answer()
 
-# async def add_values(callback: types.CallbackQuery, session: AsyncSession, values: str):
-#     user = callback.from_user
-#     from sqlalchemy import update
-#     if values in ['winter', 'spring', 'summer', 'autumn']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             season=values)
-#         await session.execute(stmt)
-#     elif values in ['two', 'folks', 'upto100', 'morethan100']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             amount=values)
-#         await session.execute(stmt)
-#     elif values in ['garden', 'restaurant', 'sea', 'unique']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             place=values)
-#         await session.execute(stmt)
-#     elif values in ['classic', 'eccentric', 'modern', 'romantic', 'travel', 'vintage']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             style=values)
-#         await session.execute(stmt)
-#     elif values in ['dirtyRose', 'emeraldGreen', 'macchiato', 'quartzPink', 'vanillaCream', 'wine']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             colors=values)
-#         await session.execute(stmt)
-#     elif values in ['trapezoidal', 'naiad', 'sheath', 'ballGown', 'overalls', 'retro']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             fashion=values)
-#         await session.execute(stmt)
-#     elif values in ['classicCostume', 'tuxedo', 'casual', 'modernCostume']:
-#         stmt = update(Quiz).where(user.id == Quiz.user_id).values(
-#             costume=values)
-#         await session.execute(stmt)
-#     await session.commit()
-#     await callback.answer()
-
 
 @router.callback_query(MenuCallBack.filter())
 async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, session: AsyncSession):
@@ -123,15 +92,46 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
     await callback.message.edit_media(media=media, reply_markup=reply_markup)
     await callback.answer()
 
+
+# async def get_quiz_dict(session: AsyncSession, user_id: int) -> Dict[str, str]:
+#     async with session() as s:
+#         quiz_instance = await s.query(Quiz).filter(Quiz.user_id == user_id).first()
+#         if quiz_instance:
+#             return quiz_instance.to_dict()
+
+# # Usage example
+#     result_dict = await get_quiz_dict(session, user_id)
+#     print(result_dict)
+async def get_quiz_values(session: AsyncSession, user_id: int) -> dict:
+    from sqlalchemy import select
+
+    # Создаем запрос, чтобы выбрать все строки из таблицы Quiz, где user_id равен указанному значению
+    stmt = select(Quiz).where(Quiz.user_id == user_id)
+
+    # Отправляем запрос к БД
+    result = await session.execute(stmt)
+
+    # Инициализируем словарь, в котором будем хранить результаты
+    quiz_values = {}
+
+    # Обрабатываем каждую строку результата
+    for row in result.scalars():
+        # Преобразуем объект строки в словарь
+        row_dict = row.__dict__
+        # Исключаем из словаря внутренние атрибуты объекта строки
+        row_dict.pop('_sa_instance_state', None)
+        # Добавляем словарь в результирующий словарь
+        quiz_values = row_dict
+
+    return quiz_values
+
 @router.callback_query(EndMenuCallBack.filter())
 async def user_menu(callback: types.CallbackQuery, callback_data: EndMenuCallBack, session: AsyncSession):
     """ Результирующий хендлер """
     if callback_data.menu_name == "end":
-        print('Поймал end')
-    media, reply_markup = await get_menu_content(
-        session,
-        level=callback_data.level,
-        menu_name=callback_data.menu_name,
-    )
-    await callback.message.edit_media(media=media, reply_markup=reply_markup)
+        # quizzes = {(q.id, q.user_id, q.season, q.amount, q.place, q.style, q.colors, q.fashion, q.costume) for q in
+        #            session.query(Quiz).options(load_only(*Quiz.__table__.columns.keys())).fetch()}
+        print("=" * 50)
+        result = await get_quiz_values(session, user_id=callback.from_user.id)
+        print(result)
     await callback.answer()
