@@ -4,7 +4,7 @@ from aiogram import Router, types
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app_wedding.compilate.sql_pdf import create_pdf
+from app_wedding.compilate.sql_pdf import create_jpg_html
 from app_wedding.database.models import Quiz
 from app_wedding.database.orm_query import orm_add_user
 from app_wedding.filters.chat_types import ChatTypeFilter
@@ -122,6 +122,6 @@ async def user_menu(callback: types.CallbackQuery, callback_data: EndMenuCallBac
     """ Результирующий хендлер """
     if callback_data.menu_name == "end":
         result = await get_quiz_values(session, user_id=callback.from_user.id)
-        create_pdf(result)
+        create_jpg_html(result)
 
     await callback.answer()

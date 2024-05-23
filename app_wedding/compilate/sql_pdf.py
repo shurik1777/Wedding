@@ -1,26 +1,41 @@
-import pdfkit
+import imgkit
 
 
-def create_pdf(db):
+def create_jpg_html(db):
     result_tuple = {
-        'season': {'summer': 'Летом', 'autumn': 'Осенью', 'winter': 'Зимой', 'spring': 'Весной'}.get(db['season'],
-                                                                                                     None),
-        'amount': {'together': 'Только вдвоем', 'folks': 'Только близкие', 'morethan100': 'До 100',
-                   'more100': 'Более 100'}.get(
-            db['amount'], None),
-        'place': {'restaurant': 'Банкетный зал', 'unique': 'Уникальная локация', 'garden': 'Вечеринка в саду',
+        'season': {'summer': 'Летом',
+                   'autumn': 'Осенью',
+                   'winter': 'Зимой',
+                   'spring': 'Весной'}.get(db['season'], None),
+        'amount': {'two': 'Только вдвоем',
+                   'folks': 'Только близкие',
+                   'upto100': 'До 100',
+                   'morethan100': 'Более 100'}.get(db['amount'], None),
+        'place': {'restaurant': 'Банкетный зал',
+                  'unique': 'Уникальная локация',
+                  'garden': 'Вечеринка в саду',
                   'sea': 'Море'}.get(db['place'], None),
-        'style': {'romantic': 'Романтическая свадьба', 'vintage': 'Винтажная свадьба',
+        'style': {'romantic': 'Романтическая свадьба',
+                  'vintage': 'Винтажная свадьба',
                   'eccentric': 'Эксцентричная свадьба',
-                  'modern': 'Современная свадьба', 'classic': 'Классическая свадьба',
+                  'modern': 'Современная свадьба',
+                  'classic': 'Классическая свадьба',
                   'travel': 'Свадьба в стиле travel'}.get(db['style'], None),
-        'colors': {'emeraldGreen': 'Изумрудно-зеленая', 'vanillaCream': 'Ванильная', 'macchiato': 'Капучино',
-                   'dustyRose': 'Пыльная роза', 'wine': 'Винная', 'quartzPink': 'Розовый кварц'}.get(db['colors'],
-                                                                                                     None),
-        'fashion': {'trapezoidal': 'Трапециевидный силуэт', 'naiad': 'Русалка', 'sheath': 'Футляр',
-                    'ballPown': 'Бальное платье', 'overalls': 'Комбинезон', 'retro': 'Ретро'}.get(db['fashion'],
-                                                                                                  None),
-        'costume': {'classicCostume': 'Классика', 'tuxedo': 'Смокинг', 'casual': 'Кэжуал',
+        'colors': {'emeraldGreen': 'Изумрудно-зеленая',
+                   'vanillaCream': 'Ванильная',
+                   'macchiato': 'Капучино',
+                   'dustyRose': 'Пыльная роза',
+                   'wine': 'Винная',
+                   'quartzPink': 'Розовый кварц'}.get(db['colors'], None),
+        'fashion': {'trapezoidal': 'Трапециевидный силуэт',
+                    'naiad': 'Русалка',
+                    'sheath': 'Футляр',
+                    'ballGown': 'Бальное платье',
+                    'overalls': 'Комбинезон',
+                    'retro': 'Ретро'}.get(db['fashion'], None),
+        'costume': {'classicCostume': 'Классика',
+                    'tuxedo': 'Смокинг',
+                    'casual': 'Кэжуал',
                     'modernCostume': 'Современный костюм'}.get(db['costume'], None)
     }
 
@@ -29,8 +44,7 @@ def create_pdf(db):
         'spring': 'spring',
         'autumn': 'autumn',
         'winter': 'winter'
-    }.get(db['season'],
-          'winter')
+    }.get(db['season'], 'winter')
 
     photo_amount_path = {
         'two': 'two',
@@ -114,7 +128,14 @@ def create_pdf(db):
     with open('./app_wedding/compilate/output.html', 'w', encoding='utf-8') as file:
         file.write(formatted_html)
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    path_wkhtmltoimage = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"
 
-    pdfkit.from_file("./app_wedding/compilate/output.html", "./app_wedding/compilate/output.pdf",
-                     verbose=True, options={"enable-local-file-access": True}, configuration=config)
+    config = imgkit.config(wkhtmltoimage=path_wkhtmltoimage)
+
+    html_file_path = "./app_wedding/compilate/output.html"
+    output_image_path = "./app_wedding/compilate/output.jpg"
+    options = {
+        'quiet': '',
+        'enable-local-file-access': '',
+    }
+    imgkit.from_file(html_file_path, output_image_path, config=config, options=options)
