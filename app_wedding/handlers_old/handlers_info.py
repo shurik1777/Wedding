@@ -2,7 +2,7 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
 import app_wedding.handlers_old.keyboards as kb
-from app_wedding.database.db import db_quiz
+from app_wedding.compilate.db import db_quiz
 from app_wedding.database.engine import session_maker
 from app_wedding.database.models import Quiz
 

@@ -1,10 +1,10 @@
-from typing import Dict
+import asyncio
 
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import load_only
 
+from app_wedding.compilate.sql_pdf import create_pdf
 from app_wedding.database.models import Quiz
 from app_wedding.database.orm_query import orm_add_user
 from app_wedding.filters.chat_types import ChatTypeFilter
@@ -93,15 +93,6 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
     await callback.answer()
 
 
-# async def get_quiz_dict(session: AsyncSession, user_id: int) -> Dict[str, str]:
-#     async with session() as s:
-#         quiz_instance = await s.query(Quiz).filter(Quiz.user_id == user_id).first()
-#         if quiz_instance:
-#             return quiz_instance.to_dict()
-
-# # Usage example
-#     result_dict = await get_quiz_dict(session, user_id)
-#     print(result_dict)
 async def get_quiz_values(session: AsyncSession, user_id: int) -> dict:
     from sqlalchemy import select
 
@@ -117,21 +108,20 @@ async def get_quiz_values(session: AsyncSession, user_id: int) -> dict:
     # Обрабатываем каждую строку результата
     for row in result.scalars():
         # Преобразуем объект строки в словарь
-        row_dict = row.__dict__
+        row_dict = vars(row)
         # Исключаем из словаря внутренние атрибуты объекта строки
-        row_dict.pop('_sa_instance_state', None)
+        row_dict = {key: value for key, value in row_dict.items() if not key.startswith('_')}
         # Добавляем словарь в результирующий словарь
-        quiz_values = row_dict
+        quiz_values.update(row_dict)
 
     return quiz_values
+
 
 @router.callback_query(EndMenuCallBack.filter())
 async def user_menu(callback: types.CallbackQuery, callback_data: EndMenuCallBack, session: AsyncSession):
     """ Результирующий хендлер """
     if callback_data.menu_name == "end":
-        # quizzes = {(q.id, q.user_id, q.season, q.amount, q.place, q.style, q.colors, q.fashion, q.costume) for q in
-        #            session.query(Quiz).options(load_only(*Quiz.__table__.columns.keys())).fetch()}
-        print("=" * 50)
         result = await get_quiz_values(session, user_id=callback.from_user.id)
-        print(result)
+        create_pdf(result)
+
     await callback.answer()
