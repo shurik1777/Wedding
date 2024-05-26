@@ -1,42 +1,42 @@
 import imgkit
 
 
-def create_jpg_html(db):
+def create_jpg_html(result_data: dict, user_id):
     result_tuple = {
         'season': {'summer': 'Летом',
                    'autumn': 'Осенью',
                    'winter': 'Зимой',
-                   'spring': 'Весной'}.get(db['season'], None),
+                   'spring': 'Весной'}.get(result_data['season'], None),
         'amount': {'two': 'Только вдвоем',
                    'folks': 'Только близкие',
                    'upto100': 'До 100',
-                   'morethan100': 'Более 100'}.get(db['amount'], None),
+                   'morethan100': 'Более 100'}.get(result_data['amount'], None),
         'place': {'restaurant': 'Банкетный зал',
                   'unique': 'Уникальная локация',
                   'garden': 'Вечеринка в саду',
-                  'sea': 'Море'}.get(db['place'], None),
+                  'sea': 'Море'}.get(result_data['place'], None),
         'style': {'romantic': 'Романтическая свадьба',
                   'vintage': 'Винтажная свадьба',
                   'eccentric': 'Эксцентричная свадьба',
                   'modern': 'Современная свадьба',
                   'classic': 'Классическая свадьба',
-                  'travel': 'Свадьба в стиле travel'}.get(db['style'], None),
+                  'travel': 'Свадьба в стиле travel'}.get(result_data['style'], None),
         'colors': {'emeraldGreen': 'Изумрудно-зеленая',
                    'vanillaCream': 'Ванильная',
                    'macchiato': 'Капучино',
-                   'dustyRose': 'Пыльная роза',
+                   'dirtyRose': 'Пыльная роза',
                    'wine': 'Винная',
-                   'quartzPink': 'Розовый кварц'}.get(db['colors'], None),
+                   'quartzPink': 'Розовый кварц'}.get(result_data['colors'], None),
         'fashion': {'trapezoidal': 'Трапециевидный силуэт',
                     'naiad': 'Русалка',
                     'sheath': 'Футляр',
                     'ballGown': 'Бальное платье',
                     'overalls': 'Комбинезон',
-                    'retro': 'Ретро'}.get(db['fashion'], None),
+                    'retro': 'Ретро'}.get(result_data['fashion'], None),
         'costume': {'classicCostume': 'Классика',
                     'tuxedo': 'Смокинг',
                     'casual': 'Кэжуал',
-                    'modernCostume': 'Современный костюм'}.get(db['costume'], None)
+                    'modernCostume': 'Современный костюм'}.get(result_data['costume'], None)
     }
 
     photo_season_path = {
@@ -44,21 +44,21 @@ def create_jpg_html(db):
         'spring': 'spring',
         'autumn': 'autumn',
         'winter': 'winter'
-    }.get(db['season'], 'winter')
+    }.get(result_data['season'], 'winter')
 
     photo_amount_path = {
         'two': 'two',
         'folks': 'folks',
         'upto100': 'upto100',
         'morethan100': 'morethan100'
-    }.get(db['amount'], None)
+    }.get(result_data['amount'], None)
 
     photo_place_path = {
         'restaurant': 'restaurant',
         'unique': 'unique',
         'garden': 'garden',
         'sea': 'sea'
-    }.get(db['place'], None)
+    }.get(result_data['place'], None)
 
     photo_style_path = {
         'romantic': 'romantic',
@@ -67,16 +67,16 @@ def create_jpg_html(db):
         'modern': 'modern',
         'classic': 'classic',
         'travel': 'travel'
-    }.get(db['style'], None)
+    }.get(result_data['style'], None)
 
     photo_colors_path = {
         'emeraldGreen': 'emeraldGreen',
         'vanillaCream': 'vanillaCream',
         'macchiato': 'macchiato',
-        'dustyRose': 'dustyRose',
+        'dirtyRose': 'dirtyRose',
         'wine': 'wine',
         'quartzPink': 'quartzPink'
-    }.get(db['colors'], None)
+    }.get(result_data['colors'], None)
 
     photo_fashion_path = {
         'trapezoidal': 'trapezoidal',
@@ -85,14 +85,14 @@ def create_jpg_html(db):
         'ballGown': 'ballGown',
         'overalls': 'overalls',
         'retro': 'retro'
-    }.get(db['fashion'], None)
+    }.get(result_data['fashion'], None)
 
     photo_costume_path = {
         'classicCostume': 'classicCostume',
         'tuxedo': 'tuxedo',
         'casual': 'casual',
         'modernCostume': 'modernCostume'
-    }.get(db['costume'], None)
+    }.get(result_data['costume'], None)
 
     with open('./app_wedding/compilate/index.html', 'r', encoding='utf-8') as file:
         html_content = file.read()
@@ -125,17 +125,17 @@ def create_jpg_html(db):
         photo_costume_path
     )
 
-    with open('./app_wedding/compilate/output.html', 'w', encoding='utf-8') as file:
+    with open(f'./app_wedding/compilate/{user_id}.html', 'w', encoding='utf-8') as file:
         file.write(formatted_html)
 
     path_wkhtmltoimage = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"
 
     config = imgkit.config(wkhtmltoimage=path_wkhtmltoimage)
 
-    html_file_path = "./app_wedding/compilate/output.html"
-    output_image_path = "./app_wedding/compilate/output.jpg"
+    html_file_path = f"./app_wedding/compilate/{user_id}.html"
+    output_image_path = f"./app_wedding/compilate/{user_id}.jpg"
     options = {
         'quiet': '',
         'enable-local-file-access': '',
     }
-    imgkit.from_file(html_file_path, output_image_path, config=config, options=options)
+    imgkit.from_file(html_file_path, output_image_path, options=options, config=config)

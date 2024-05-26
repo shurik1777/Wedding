@@ -1,7 +1,8 @@
-import asyncio
+import os
 
 from aiogram import Router, types
 from aiogram.filters import CommandStart
+from aiogram.types import FSInputFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app_wedding.compilate.sql_pdf import create_jpg_html
@@ -95,23 +96,15 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
 
 async def get_quiz_values(session: AsyncSession, user_id: int) -> dict:
     from sqlalchemy import select
-
-    # Создаем запрос, чтобы выбрать все строки из таблицы Quiz, где user_id равен указанному значению
     stmt = select(Quiz).where(Quiz.user_id == user_id)
-
-    # Отправляем запрос к БД
     result = await session.execute(stmt)
 
-    # Инициализируем словарь, в котором будем хранить результаты
     quiz_values = {}
 
-    # Обрабатываем каждую строку результата
     for row in result.scalars():
         # Преобразуем объект строки в словарь
         row_dict = vars(row)
-        # Исключаем из словаря внутренние атрибуты объекта строки
         row_dict = {key: value for key, value in row_dict.items() if not key.startswith('_')}
-        # Добавляем словарь в результирующий словарь
         quiz_values.update(row_dict)
 
     return quiz_values
@@ -121,7 +114,14 @@ async def get_quiz_values(session: AsyncSession, user_id: int) -> dict:
 async def user_menu(callback: types.CallbackQuery, callback_data: EndMenuCallBack, session: AsyncSession):
     """ Результирующий хендлер """
     if callback_data.menu_name == "end":
-        result = await get_quiz_values(session, user_id=callback.from_user.id)
-        create_jpg_html(result)
+        create_jpg_html(result_data=await get_quiz_values(session, user_id=callback.from_user.id),
+                        user_id=callback.from_user.id)
+
+        print(await get_quiz_values(session, user_id=callback.from_user.id))
+
+        await callback.message.answer_document(document=FSInputFile(f"./app_wedding/compilate/{callback.from_user.id}.jpg"))
+
+        os.remove(f"./app_wedding/compilate/{callback.from_user.id}.jpg")
+        os.remove(f"./app_wedding/compilate/{callback.from_user.id}.html")
 
     await callback.answer()
